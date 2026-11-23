@@ -1,0 +1,45 @@
+---
+// The live mascot: one WebGPU canvas fixed to the side of the viewport that follows the page.
+// Each section's data-act/data-say decides what she does while it is in the middle of the screen.
+// Stays a still image with reduced motion or when nothing can be drawn.
+interface Props { alt: string; hint: string; pats: string[] }
+const { alt, hint, pats } = Astro.props;
+---
+<div class="stage" data-stage data-pats={JSON.stringify(pats)}>
+  <div class="stage-glow" aria-hidden="true"></div>
+  <img src="/img/cover-mascot.png" alt={alt} width="352" height="1020" class="stage-poster" />
+  <canvas role="img" aria-label={alt} tabindex="0"></canvas>
+  <p class="stage-hint">{hint}</p>
+</div>
+<p class="say" data-say aria-live="polite"></p>
+
+<style>
+  .stage { position: fixed; z-index: 30; right: 8px; bottom: 0; width: 120px; height: 200px; pointer-events: none; }
+  @media (min-width: 1024px) {
+    .stage { right: max(16px, calc((100vw - 1180px) / 2)); top: 80px; bottom: 0; width: 300px; height: auto; }
+  }
+  /* A soft floor shadow in the ink colour: works on every section's background, shrinks while she is in the air. */
+  .stage-glow { position: absolute; left: 50%; top: var(--floor, 97%); width: 44%; aspect-ratio: 4; translate: -50% -50%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(58, 46, 92, 0.3), rgba(58, 46, 92, 0.12) 60%, transparent 100%);
+    scale: calc(1 - var(--lift, 0) * 0.45); opacity: calc(1 - var(--lift, 0) * 0.55); }
+  .stage-poster { position: absolute; left: 50%; bottom: 22%; height: 58%; width: auto; translate: -50% 0; transition: opacity 0.4s; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; pointer-events: auto; cursor: pointer; outline-offset: -6px; }
+  .stage.ready canvas { opacity: 1; }
+  .stage.ready .stage-poster { opacity: 0; }
+  .stage-hint { position: absolute; left: 50%; top: calc(var(--floor, 90%) + 14px); translate: -50% 0; white-space: nowrap; padding: 4px 12px; border-radius: 999px;
+    background: #fff; color: var(--color-sub); font-size: 12px; box-shadow: var(--card); }
+  @media (max-width: 1023px) { .stage-hint { display: none; } }
+
+  .say { position: fixed; z-index: 31; left: min(var(--x, -999px), calc(100vw - 132px)); top: max(var(--y, -999px), 72px);
+    translate: -50% -100%; max-width: min(250px, 66vw); padding: 10px 16px; border-radius: 20px; background: #fff; box-shadow: var(--card);
+    font-size: 15px; font-weight: 900; line-height: 1.4; pointer-events: none; opacity: 0; scale: 0.6; transform-origin: 50% 100%;
+    transition: opacity 0.2s, scale 0.3s cubic-bezier(0.34, 1.8, 0.64, 1); }
+  .say::after { content: ""; position: absolute; left: 50%; bottom: -10px; translate: -50% 0; border: 7px solid transparent; border-top: 10px solid #fff; }
+  .say:global(.show) { opacity: 1; scale: 1; }
+  @media (max-width: 1023px) { .say { font-size: 13px; } }
+</style>
+
+<script>
+  import { mountStage } from "../scripts/stage";
+  mountStage();
+</script>

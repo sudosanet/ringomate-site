@@ -1,0 +1,29 @@
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </openapi.json>; rel="service-desc"; type="application/openapi+json"
+  Link: </llms.txt>; rel="describedby"; type="text/plain"
+  Link: </index.md>; rel="alternate"; type="text/markdown"
+  Link: </.well-known/mcp/server-card.json>; rel="mcp-server-card"
+  Link: </ja/>; rel="alternate"; hreflang="ja"
+
+/ja/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </openapi.json>; rel="service-desc"; type="application/openapi+json"
+  Link: </llms.txt>; rel="describedby"; type="text/plain"
+  Link: </ja/index.md>; rel="alternate"; type="text/markdown"
+  Link: </>; rel="alternate"; hreflang="en"
+
+/.well-known/*
+  Access-Control-Allow-Origin: *
+
+/api/*
+  Access-Control-Allow-Origin: *
+
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/.well-known/api-catalog
+  Content-Type: application/linkset+json
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

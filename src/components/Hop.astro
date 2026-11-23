@@ -1,0 +1,9 @@
+---
+// The pink bubble arrow from the video. side: points right; side="xl": right on wide screens, down when stacked.
+interface Props { side?: boolean | "xl" }
+const { side = false } = Astro.props;
+const cls = side === "xl" ? "side-xl" : side ? "side" : "";
+---
+<span class={`hop ${cls}`} aria-hidden="true">
+  <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="currentColor" stroke="#fff" stroke-width="6" /><path d="M24,32 L40,48 L56,32" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" /></svg>
+</span>

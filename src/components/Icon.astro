@@ -1,0 +1,14 @@
+---
+// Inlines a Phosphor icon (fill weight) at build time.
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+
+interface Props { name: string; class?: string; color?: string; label?: string }
+const { name, class: cls = "", color, label } = Astro.props;
+const file = createRequire(import.meta.url).resolve(`@phosphor-icons/core/assets/fill/${name}-fill.svg`);
+const svg = readFileSync(file, "utf8").replace(
+  "<svg ",
+  `<svg class="ic ${cls}" ${color ? `style="color:${color}" ` : ""}${label ? `role="img" aria-label="${label}" ` : 'aria-hidden="true" '}`,
+);
+---
+<Fragment set:html={svg} />

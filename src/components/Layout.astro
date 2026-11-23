@@ -1,0 +1,55 @@
+---
+import "../styles/global.css";
+import { LANGS, SITE, mdPathFor, pathFor, sites, type Lang } from "../content";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = sites[lang];
+const url = new URL(pathFor(lang), SITE).href;
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "RingoMate",
+  description: s.meta.description,
+  applicationCategory: "EntertainmentApplication",
+  operatingSystem: "macOS 27",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  license: "https://www.apache.org/licenses/LICENSE-2.0",
+  url,
+  inLanguage: lang,
+};
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{s.meta.title}</title>
+    <meta name="description" content={s.meta.description} />
+    <meta name="theme-color" content="#E6DEFF" />
+    <link rel="canonical" href={url} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathFor(l), SITE).href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL("/", SITE).href} />
+    <link rel="alternate" type="text/markdown" href={mdPathFor(lang)} />
+    <link rel="describedby" type="text/plain" href="/llms.txt" />
+    <link rel="api-catalog" href="/.well-known/api-catalog" />
+    <link rel="ai-catalog" href="/.well-known/ai-catalog.json" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/img/icon-180.png" />
+    <link rel="preload" href="/fonts/rounded-900.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RingoMate" />
+    <meta property="og:title" content={s.meta.title} />
+    <meta property="og:description" content={s.meta.description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={new URL("/img/og.png", SITE).href} />
+    <meta property="og:image:alt" content={s.meta.ogAlt} />
+    <meta property="og:locale" content={lang === "ja" ? "ja_JP" : "en_US"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn">{s.ui.skip}</a>
+    <slot />
+  </body>
+</html>

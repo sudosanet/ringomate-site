@@ -1,0 +1,31 @@
+diff --git a/lib/nodes/index.module.js b/lib/nodes/index.module.js
+index 9d9c8bac8803e282570a212852df0824ba4a1e72..5ba8f8c2eaee25a2acbde0572a6e779023663b16 100644
+--- a/lib/nodes/index.module.js
++++ b/lib/nodes/index.module.js
+@@ -13,7 +13,7 @@ import * as THREE2 from "three/webgpu";
+ import { cos, mat2, sin, uv, vec2, vec4 } from "three/tsl";
+ import { materialReference } from "three/tsl";
+ import * as THREE4 from "three/webgpu";
+-import { BRDF_Lambert, diffuseColor, float, mix, transformedNormalView, vec3 } from "three/tsl";
++import { BRDF_Lambert, diffuseColor, float, mix, normalView as transformedNormalView, vec3 } from "three/tsl";
+ import * as THREE3 from "three/webgpu";
+ import { nodeImmutable } from "three/tsl";
+ import * as THREE_TSL from "three/tsl";
+@@ -35,7 +35,7 @@ import {
+   vec3 as vec32,
+   vec4 as vec42
+ } from "three/tsl";
+-import { float as float2, modelViewPosition, transformedNormalView as transformedNormalView2 } from "three/tsl";
++import { float as float2, positionView, normalView as transformedNormalView2 } from "three/tsl";
+ var threeRevision = parseInt(THREE.REVISION, 10);
+ if (threeRevision < 167) {
+   console.warn(
+@@ -190,7 +190,7 @@ var mtoonParametricRim = FnCompat(
+     parametricRimFresnelPower,
+     parametricRimColor
+   }) => {
+-    const viewDir = modelViewPosition.normalize();
++    const viewDir = positionView.normalize();
+     const dotNV = transformedNormalView2.dot(viewDir.negate());
+     const rim = float2(1).sub(dotNV).add(parametricRimLift).clamp().pow(parametricRimFresnelPower);
+     return rim.mul(parametricRimColor);

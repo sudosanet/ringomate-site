@@ -1,0 +1,354 @@
+---
+import Icon from "./Icon.astro";
+import Hop from "./Hop.astro";
+import Mascot from "./Mascot.astro";
+import { DOWNLOAD, LICENSE, PRIVACY, REPO, TSUKUYOMI_TERMS, pathFor, sites, type Lang } from "../content";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = sites[lang];
+const L = s.lines;
+const other: Lang = lang === "en" ? "ja" : "en";
+const say = (...xs: string[]) => JSON.stringify(xs);
+const rowColors = ["#6A9BE0", "#FF5C9D", "#D97300", "#7A5CE0"];
+const tint = ["#D8EBFB", "#E6DEFF", "#FFD9E8", "#FFE3CC", "#D2F2E6", "#FFF1BF"];
+const factColors = ["#5EC8FF", "#B9A8FF", "#FF8FBE", "#FFC44D", "#8EDBB0", "#FFC44D", "#5EC8FF", "#B9A8FF", "#8EDBB0", "#FF8FBE", "#5EC8FF", "#FFC44D"];
+const voiceTint = ["#FFEFA8", "#D4F2C8", "#D6CEFA", "#FFD3BA"];
+const float = (icon: string, color: string, pos: string, delay = 0) => ({ icon, color, pos, delay });
+---
+<header class="sticky top-0 z-40 bg-lav/85 backdrop-blur">
+  <nav class="wrap flex items-center gap-3 py-3" aria-label="Main">
+    <a href={pathFor(lang)} class="mr-auto flex items-center gap-2 text-xl font-black text-ink no-underline">
+      <img src="/favicon.svg" alt="" width="28" height="28" class="logo" />RingoMate
+    </a>
+    <a href="#features" class="hidden text-sm text-ink no-underline sm:inline">{s.ui.nav.features}</a>
+    <a href="#install" class="hidden text-sm text-ink no-underline sm:inline">{s.ui.nav.install}</a>
+    <a href="#agents" class="hidden text-sm text-ink no-underline md:inline">{s.ui.nav.agents}</a>
+    <form action="/lang" method="get" class="contents" toolname="switch_language"
+      tooldescription="Switch the RingoMate site between English and Japanese.">
+      <input type="hidden" name="to" value={other} toolparamdescription="Target language: en or ja." />
+      <button type="submit" class="badge cursor-pointer" lang={other}>{s.ui.otherLang}</button>
+    </form>
+  </nav>
+</header>
+
+<Mascot alt={s.ui.mascotAlt} hint={s.ui.mascotHint} pats={L.pat} />
+
+<main id="main">
+  <section class="band bg-lav !pt-10 lg:flex lg:min-h-[calc(100svh-64px)] lg:items-center" data-act="hello" data-say={say(L.hello)}>
+    {[float("heart", "#FF8FBE", "left:6%;top:10%"), float("sparkle", "#FFC44D", "left:44%;top:7%", 1), float("music-notes", "#6A9BE0", "left:52%;bottom:12%", 2)].map((f) =>
+      <span class="floaty" style={`${f.pos};animation-delay:-${f.delay}s`} aria-hidden="true"><Icon name={f.icon} color={f.color} /></span>)}
+    <div class="wrap">
+      <h1 class="hero-title text-[clamp(32px,5.4vw,68px)] font-black leading-[1.2] [text-shadow:0_4px_0_rgba(255,255,255,0.9)]">
+        {s.hero.lines.map((l, i) => <span class={i ? "text-hot" : ""} style={`animation-delay:${0.1 + i * 0.18}s`}>{l}</span>)}
+      </h1>
+      <p class="rise mt-5 text-[clamp(17px,2.2vw,24px)] font-black text-sub" style="animation-delay:.7s">{s.hero.sub}</p>
+      <div class="rise mt-4 flex flex-wrap gap-2" style="animation-delay:.85s">{s.hero.badges.map((b) => <span class="badge">{b}</span>)}</div>
+      <div class="rise mt-7 flex flex-wrap items-center gap-3" style="animation-delay:1s">
+        <a class="btn shine" href={DOWNLOAD} data-download><Icon name="download-simple" />{s.ui.download}<small>{s.ui.downloadSub}</small></a>
+        <a class="btn ghost" href="#features"><Icon name="arrow-down" color="#FF5C9D" />{s.ui.nav.features}</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="band bg-pink" data-act="idle" data-say={say(L.features)}>
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="sparkle" />{s.features.title}</h2>
+      <ul class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+        {s.features.items.map((f, i) => (
+          <li class="pop" style={`--d:${i * 0.04}`}>
+            <a href={f.href} class="card tile ftile h-full"><i class="fnum">{i + 1}</i><span class="wiggle"><Icon name={f.icon} color="#FF5C9D" /></span><b>{f.label}</b></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="models" class="band bg-sky" data-act="spin" data-say={say(L.models)}>
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="cube" />{s.models.title}</h2>
+      <p class="lead">{s.models.lead}</p>
+      <div class="mt-8 grid items-stretch gap-3 xl:grid-cols-[1fr_auto_1.15fr_auto_1fr]">
+        <div class="grid gap-3">
+          <div class="card pop p-5 text-center">
+            <Icon name="file" class="!h-12 !w-12" color="#6A9BE0" />
+            <h3 class="text-2xl">{s.models.model.title}</h3>
+            <div class="mt-2">{s.models.model.exts.map((e) => <span class="ext">{e}</span>)}</div>
+            <p class="note !mt-2">{s.models.model.note}</p>
+          </div>
+          <div class="card pop p-5 text-center">
+            <h3 class="text-xl">{s.models.motion.title}</h3>
+            <div class="mt-2">{s.models.motion.exts.map((e) => <span class="ext m">{e}</span>)}</div>
+          </div>
+        </div>
+        <Hop side="xl" />
+        <div class="card pop p-5">
+          <h3 class="flex items-center justify-center gap-2 text-2xl"><Icon name="magnifying-glass" color="#FF5C9D" />{s.models.analyze.title}</h3>
+          <ul class="mt-3 grid gap-2">
+            {s.models.analyze.steps.map((x, i) => <li class="slide flex items-center gap-3 rounded-2xl bg-pink/60 px-4 py-2 text-lg" style={`--d:${i * 0.08}`}><Icon name={x.icon} color="#FF5C9D" class="!h-7 !w-7" />{x.text}</li>)}
+          </ul>
+          <p class="note text-center">{s.models.analyze.note}</p>
+        </div>
+        <Hop side="xl" />
+        <div class="card pop p-5">
+          <h3 class="flex items-center justify-center gap-2 text-2xl"><Icon name="sparkle" color="#F08A00" />{s.models.moves.title}</h3>
+          <ul class="mt-3 grid gap-2">
+            {s.models.moves.steps.map((x, i) => <li class="slide flex items-center gap-3 rounded-2xl bg-orange/70 px-4 py-2 text-lg" style={`--d:${i * 0.08}`}><Icon name={x.icon} color="#F08A00" class="!h-7 !w-7" />{x.text}</li>)}
+          </ul>
+          <p class="note text-center">{s.models.moves.note}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dance" class="band bg-lemon" data-act="dance" data-say={say(L.dance)}>
+    {[float("music-notes", "#FF5C9D", "left:4%;top:16%"), float("music-note", "#6A9BE0", "left:40%;top:9%", 0.6), float("music-notes", "#F08A00", "left:50%;bottom:10%", 1.2)].map((f) =>
+      <span class="floaty beat-bob" style={`${f.pos};animation-delay:-${f.delay}s`} aria-hidden="true"><Icon name={f.icon} color={f.color} /></span>)}
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="music-notes" />{s.dance.title}</h2>
+      <p class="lead">{s.dance.lead}</p>
+      <div class="max-w-[760px]">
+        <div class="mt-8 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-1 sm:gap-2">
+          {s.dance.steps.map((x, i) => (
+            <>
+              <div class="card tile pop h-full" style={`--d:${i * 0.1}`}>
+                <span class={i === 1 ? "beat inline-block" : "inline-block"}><Icon name={x.icon} color={["#6A9BE0", "#FF5C9D", "#F08A00"][i]} /></span>
+                <b>{x.title}</b><em>{x.sub}</em>
+              </div>
+              {i < 2 && <Hop side />}
+            </>
+          ))}
+        </div>
+        <Hop />
+        <div class="result pop"><span class="beat inline-flex"><Icon name="music-notes" /></span>{s.dance.result}</div>
+        <p class="note">{s.dance.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="props" class="band bg-mint" data-act="hold" data-hold="balloon" data-say={say(s.props.items[0].line)}>
+    {[float("heart", "#FF5C9D", "left:5%;bottom:14%"), float("balloon", "#FF8FBE", "left:46%;top:10%", 1.5)].map((f) =>
+      <span class="floaty" style={`${f.pos};animation-delay:-${f.delay}s`} aria-hidden="true"><Icon name={f.icon} color={f.color} /></span>)}
+    <div class="wrap grid gap-10 md:grid-cols-2">
+      <div>
+        <h2 class="chip pop"><Icon name="balloon" />{s.props.title}</h2>
+        <p class="lead">{s.props.sub}</p>
+        <div class="mt-5 flex flex-wrap gap-2" role="group" aria-label={s.ui.tryProp}>
+          {s.props.items.map((p, i) => <button type="button" class="toy" data-prop={p.id} data-line={p.line} aria-pressed={i === 0 ? "true" : "false"}><Icon name={p.icon} />{p.label}</button>)}
+        </div>
+        <p class="note">{s.ui.tryProp}</p>
+      </div>
+      <div>
+        <h2 class="chip pop"><Icon name="hand-pointing" />{s.props.touchTitle}</h2>
+        <p class="lead">{s.props.touchSub}</p>
+        <p class="note flex items-center gap-2"><Icon name="cursor-click" color="#FF5C9D" class="wiggle" />{s.ui.mascotHint}</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="talk" class="band bg-sky" data-act="talk" data-say={say(...L.talk)}>
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="chat-circle-dots" />{s.talk.title}</h2>
+      <p class="lead">{s.talk.lead}</p>
+      <ol class="mt-8 max-w-[760px]">
+        {s.talk.steps.map((x, i) => (
+          <li class="slide" style={`--d:${i * 0.06}`}>
+            <div class="card row"><i class="num" style={`background:${rowColors[i]}`}>{i + 1}</i><Icon name={x.icon} color={rowColors[i]} /><div><b>{x.title}</b><em>{x.sub}</em></div></div>
+            {i < 3 && <Hop />}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="notice" class="band bg-orange" data-act="notice" data-say={say(s.notice.bubble)}>
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="bell-ringing" class="ring" />{s.notice.title}</h2>
+      <div class="max-w-[640px]">
+        <div class="card drop relative mt-8 flex items-center gap-4 p-4">
+          <span class="grid h-14 w-14 place-items-center rounded-2xl bg-[#FFA24A]"><Icon name="chat-circle-dots" color="#fff" class="!h-9 !w-9" /></span>
+          <div><b class="block text-xl">{s.notice.banner.app}</b><span class="text-sub">{s.notice.banner.text}</span></div>
+          <span class="absolute -right-2 -top-2 grid h-9 w-9 place-items-center rounded-full border-4 border-white bg-hot font-black text-white">1</span>
+        </div>
+        <Hop />
+        <div class="pill-dark pop"><Icon name="sparkle" color="#FF7DB3" class="!h-8 !w-8" /><div><b>{s.notice.ai.title}</b><em>{s.notice.ai.sub}</em></div></div>
+        <Hop />
+        <p class="bubble pop">{s.notice.bubble}</p>
+        <p class="note !mt-7">{s.notice.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="voice" class="band bg-lav" data-act="voice">
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="speaker-high" />{s.voice.title}</h2>
+      <p class="lead">{s.voice.lead}</p>
+      <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4" role="group" aria-label={s.ui.tryVoice}>
+        {s.voice.presets.map((p, i) => (
+          <button type="button" class="card voice pop" style={`background:${voiceTint[i]};--d:${i * 0.06}`} data-voice={i} data-line={p.line} aria-pressed="false">
+            <Icon name={p.icon} class="!h-10 !w-10" /><b>{p.label}</b><Icon name="play-circle" color="#FF5C9D" class="!h-7 !w-7" />
+          </button>
+        ))}
+      </div>
+      <p class="note">{s.ui.tryVoice}</p>
+      <h3 class="chip pop mt-14 !text-[clamp(20px,3vw,30px)]"><Icon name="sparkle" />{s.voice.createTitle}</h3>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        {s.voice.create.map((c, i) => (
+          <div class="card pop p-6 text-center">
+            <Icon name={c.icon} color={i ? "#6A9BE0" : "#FF5C9D"} class="!h-12 !w-12" />
+            <h4 class="text-2xl font-black">{c.title}</h4>
+            <p class="mx-auto mt-3 w-fit rounded-2xl border-2 border-dashed border-hot/40 bg-pink/40 px-5 py-2 text-lg">{c.example}</p>
+            <p class="note">{c.sub}</p>
+            <div class="mt-3 flex h-10 items-center justify-center gap-1" aria-hidden="true">
+              {Array.from({ length: 14 }, (_, k) => <i class="wave block w-2 rounded-full" style={`height:${20 + 70 * Math.abs(Math.sin(k * 1.4 + i))}%;background:${i ? "#6A9BE0" : "#FF5C9D"};animation-delay:${k * 0.05}s`} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="note">{s.voice.note}</p>
+    </div>
+  </section>
+
+  <section class="band bg-lemon" data-act="idle">
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="heart" />{s.more.title}</h2>
+      <ul class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {s.more.items.map((x, i) => (
+          <li class="card fcard pop" style={`--d:${(i % 3) * 0.05}`}>
+            <span class="fc-ic" style={`background:${tint[i % tint.length]}`}><Icon name={x.icon} color="#3A2E5C" class="wiggle" /></span>
+            <b>{x.title}</b><em>{x.sub}</em>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="privacy" class="band dark bg-night" data-act="shh" data-say={say(L.privacy)}>
+    <div class="wrap">
+      <h2 class="dtitle pop">{s.privacy.title}</h2>
+      <p class="lead">{s.privacy.lead}</p>
+      <div class="mt-10 grid items-center gap-4 xl:grid-cols-[auto_auto_1fr] [&>*]:min-w-0">
+        <ul class="flex flex-wrap justify-center gap-2 xl:flex-col">
+          {s.privacy.inputs.map((x, i) => <li class="slide flex items-center gap-2 rounded-full bg-white/10 px-4 py-2" style={`--d:${i * 0.08}`}><Icon name={x.icon} color="#B4DDF3" />{x.label}</li>)}
+        </ul>
+        <Hop side="xl" />
+        <div class="pop rounded-[32px] border-4 border-white/30 bg-white/5 p-5">
+          <p class="flex items-center gap-2 font-black"><Icon name="lock-simple" />{s.privacy.mac}</p>
+          <ul class="mt-3 grid gap-2 sm:grid-cols-3">
+            {s.privacy.steps.map((x) => <li class="flex items-center justify-center gap-2 rounded-2xl bg-white px-3 py-3 text-ink"><Icon name={x.icon} />{x.label}</li>)}
+          </ul>
+          <p class="mt-3 flex items-center justify-center gap-2 rounded-full bg-hot/20 py-2"><span class="beat inline-flex"><Icon name="heart" color="#FF7DB3" /></span>{s.privacy.react}</p>
+        </div>
+      </div>
+      <div class="pop mt-6 flex w-fit items-center gap-4 rounded-full bg-white/5 px-5 py-3">
+        <span class="relative"><Icon name="cloud" color="#8E86C9" class="!h-12 !w-12" /><Icon name="x-circle" color="#FF5C9D" class="!absolute -bottom-1 -right-1 !h-6 !w-6 rounded-full bg-white" /></span>
+        <b>{s.privacy.out}</b>
+      </div>
+      <p class="note">{s.privacy.note} · <a class="underline" href={PRIVACY}>{s.footer.privacy}</a></p>
+    </div>
+  </section>
+
+  <section class="band dark bg-night !pt-0" data-act="think" data-say={say(L.engine)}>
+    <div class="wrap">
+      <h2 class="dtitle pop">{lang === "ja" ? <>AI はほぼ <span class="pinkt">Neural Engine</span></> : <>AI runs mostly on the <span class="pinkt">Neural Engine</span></>}</h2>
+      <p class="lead">{s.engine.lead}</p>
+      <div class="pop mt-8 rounded-[32px] border-4 border-hot/50 bg-white/5 p-5">
+        <p class="mb-3 text-xl font-black text-[#FF8FBE]">Neural Engine</p>
+        <ul class="grid gap-2 sm:grid-cols-2">
+          {s.engine.ne.map((x, i) => <li class="slide flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3" style={`--d:${i * 0.06}`}><Icon name={x.icon} color="#FF7DB3" class="!h-8 !w-8" /><div><b class="block leading-tight">{x.text}</b><em class="not-italic text-sm text-[#cfc6f2]">{x.tag}</em></div></li>)}
+        </ul>
+      </div>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {([["GPU", s.engine.gpu, "#6A9BE0"], ["CPU", s.engine.cpu, "#8E7BE6"]] as const).map(([h, x, c]) => (
+          <div class="pop rounded-[28px] bg-white p-5 text-ink">
+            <span class="rounded-full px-3 py-1 text-sm font-black text-white" style={`background:${c}`}>{h}</span>
+            <b class="mt-2 block text-2xl">{x.title}</b>
+            <em class="not-italic text-sub">{x.sub}</em>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band dark bg-deep" data-act="sleepy" data-say={say(L.numbers)}>
+    <div class="wrap">
+      <h2 class="dtitle pop">{s.numbers.title}</h2>
+      <p class="lead">{s.numbers.lead}</p>
+      <ul class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
+        {s.numbers.items.map((f, i) => (
+          <li class="fact pop" style={`--d:${(i % 3) * 0.05}`}>
+            <div class="top"><Icon name={f.icon} color={factColors[i]} /><b><span data-count={f.value}>{f.value}</span><small>{f.unit}</small></b></div>
+            <em>{f.label}</em>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="claude" class="band dark bg-deep !pt-0" data-act="think" data-states={JSON.stringify(L.claude)}>
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="code" />{s.claude.title}</h2>
+      <p class="lead">{s.claude.lead}</p>
+      <div class="mt-8 max-w-[680px] overflow-hidden rounded-3xl bg-[#1a1530] font-mono text-[15px] shadow-2xl" lang="en" data-term>
+        <div class="flex items-center gap-2 bg-white/10 px-4 py-2"><i class="h-3 w-3 rounded-full bg-[#FF8FA3]" /><i class="h-3 w-3 rounded-full bg-[#FFD36E]" /><i class="h-3 w-3 rounded-full bg-[#8EDBB0]" /><b class="ml-2 font-rounded text-sm">Claude Code</b></div>
+        <div class="grid min-h-[150px] content-start gap-1 p-4">
+          <p data-step="0" lang={lang}><span class="text-hot">&gt;</span> {s.claude.prompt}</p>
+          {s.claude.lines.map((l) => <p class="text-white/60" data-step="1">{l}</p>)}
+          <p class="text-[#FFC2DC]" lang={lang} data-step="2">{s.claude.ask}</p>
+          <p class="text-[#8EDBB0]" data-step="3">{s.claude.ok}</p>
+        </div>
+      </div>
+      <ul class="mt-4 flex flex-wrap gap-2" data-chips>
+        {s.claude.states.map((x, i) => <li class="state flex items-center gap-2 rounded-full bg-white px-4 py-2 text-ink"><Icon name={x.icon} color={["#E0A800", "#6A9BE0", "#FF5C9D", "#2FA36B"][i]} />{x.label}</li>)}
+      </ul>
+      <p class="note">{s.claude.note}. {s.claude.plugin}.</p>
+    </div>
+  </section>
+
+  <section id="install" class="band bg-mint" data-act="hello" data-say={say(L.install)}>
+    <div class="wrap grid gap-8 xl:grid-cols-[1.3fr_1fr] [&>*]:min-w-0">
+      <div>
+        <h2 class="chip pop"><Icon name="download-simple" />{s.install.title}</h2>
+        <ol class="mt-8 grid gap-3">
+          {s.install.steps.map((x, i) => <li class="card row slide" style={`--d:${i * 0.06}`}><i class="num bg-hot">{i + 1}</i><b>{x}</b></li>)}
+        </ol>
+        <p class="note">{s.install.note}</p>
+      </div>
+      <div class="card pop self-start p-6">
+        <ul class="grid gap-2">
+          {s.install.requirements.map((r) => <li class="flex items-center gap-2"><Icon name="check-circle" color="#2FA36B" />{r}</li>)}
+        </ul>
+        <a class="btn shine mt-5 w-full justify-center" href={DOWNLOAD} data-download><Icon name="download-simple" />{s.ui.download}</a>
+        <a class="mt-4 flex items-center justify-center gap-2 text-sub" href={REPO}><Icon name="code" />{s.install.source}</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="agents" class="band bg-sky" data-act="idle">
+    <div class="wrap">
+      <h2 class="chip pop"><Icon name="robot" />{s.agents.title}</h2>
+      <p class="lead">{s.agents.lead}</p>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {s.agents.items.map((x, i) => <li class="pop" style={`--d:${(i % 3) * 0.05}`}><a class="card ftile block h-full p-4 text-ink no-underline" href={x.href}><b class="block">{x.label}</b><em class="text-sm not-italic text-sub">{x.sub}</em></a></li>)}
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="band bg-hot text-center text-white" data-act="cheer">
+  <div class="wrap">
+    <p class="pop text-[clamp(40px,7vw,72px)] font-black leading-none">RingoMate</p>
+    <p class="mt-3 text-xl font-black">{s.footer.tagline}</p>
+    <p class="mt-4 flex flex-wrap justify-center gap-2"><span class="badge !text-hot">{s.footer.free}</span><a class="badge !text-ink no-underline" href={LICENSE}>{s.footer.license}</a></p>
+    <ul class="mt-6 grid gap-1 text-sm text-white/90">{s.footer.credits.map((c) => <li>{c}</li>)}</ul>
+    <p class="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm">
+      <a class="underline" href={TSUKUYOMI_TERMS}>{s.footer.terms}</a>
+      <a class="underline" href={PRIVACY}>{s.footer.privacy}</a>
+      <a class="underline" href={REPO}>{s.footer.source}</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  import "../scripts/page";
+</script>

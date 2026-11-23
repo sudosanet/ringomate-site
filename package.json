@@ -1,0 +1,47 @@
+{
+  "name": "ringomate-site",
+  "version": "1.0.0",
+  "description": "RingoMate website",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "pnpm build && wrangler dev",
+    "deploy": "pnpm build && wrangler deploy",
+    "check": "tsc --noEmit -p worker",
+    "model": "node scripts/model.mjs",
+    "fonts": "sh scripts/fonts.sh",
+    "agent-check": "node scripts/agent-check.mjs"
+  },
+  "license": "Apache-2.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.21.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.21.0",
+  "type": "module",
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.6",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@pixiv/three-vrm": "3.5.5",
+    "@tailwindcss/vite": "4.3.5",
+    "astro": "7.4.13",
+    "tailwindcss": "4.3.5",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261121.1",
+    "@gltf-transform/cli": "4.5.1",
+    "@phosphor-icons/core": "2.1.1",
+    "@types/three": "0.187.0",
+    "sharp": "0.35.5",
+    "typescript": "7.0.2",
+    "wrangler": "4.166.0"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=26.13.1"
+  }
+}
