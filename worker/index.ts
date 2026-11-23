@@ -36,7 +36,22 @@ export default {
         headers: { "Content-Type": "model/gltf-binary", "Cache-Control": "public, max-age=86400", ETag: obj.httpEtag },
       });
     }
-    if (url.pathname === "/lang") return Response.redirect(new URL(url.searchParams.get("to") === "ja" ? "/ja/" : "/", url).href, 303);
+    if (url.pathname === "/lang") {
+      // 選んだ言語は覚えておき、次に / を開いたときもそれを出す
+      const ja = url.searchParams.get("to") === "ja";
+      return new Response(null, {
+        status: 303,
+        headers: { Location: new URL(ja ? "/ja/" : "/", url).href, "Set-Cookie": `lang=${ja ? "ja" : "en"}; Path=/; Max-Age=31536000; SameSite=Lax; Secure` },
+      });
+    }
+    // / は、言語を選んだことがなければブラウザの一番の言語が日本語のとき /ja/ へ
+    if (url.pathname === "/" && !/\btext\/markdown\b/.test(request.headers.get("Accept") ?? "")) {
+      const chosen = /(?:^|;\s*)lang=(en|ja)\b/.exec(request.headers.get("Cookie") ?? "")?.[1];
+      const preferred = (request.headers.get("Accept-Language") ?? "").split(",")[0].trim().toLowerCase();
+      if (chosen === "ja" || (!chosen && preferred.startsWith("ja"))) {
+        return new Response(null, { status: 302, headers: { Location: new URL("/ja/", url).href, Vary: "Accept-Language, Cookie" } });
+      }
+    }
 
     const md = MARKDOWN[url.pathname];
     if (md && /\btext\/markdown\b/.test(request.headers.get("Accept") ?? "")) {
@@ -54,7 +69,7 @@ export default {
     const res = await env.ASSETS.fetch(request);
     if (!md) return res;
     const out = new Response(res.body, res);
-    out.headers.append("Vary", "Accept");
+    out.headers.append("Vary", url.pathname === "/" ? "Accept, Accept-Language, Cookie" : "Accept");
     return out;
   },
 } satisfies ExportedHandler<Env>;

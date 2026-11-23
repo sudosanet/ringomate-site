@@ -20,7 +20,7 @@ node scripts/agent-check.mjs   # local stand-in for isitagentready.com
 
 ## Deploy
 
-Pushing to `main` deploys through Cloudflare Workers Builds (build command `pnpm build`, deploy command `npx wrangler deploy`).
+Pushing to `main` deploys through Cloudflare Workers Builds (build command `pnpm build`, deploy command `pnpm exec wrangler deploy`; `npx` stops on `devEngines`).
 The Tsukuyomi-chan model is not in git: the Worker serves `/models/*` from the private R2 bucket `ringomate-site`. After changing it:
 
 ```sh
