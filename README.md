@@ -20,9 +20,12 @@ node scripts/agent-check.mjs   # local stand-in for isitagentready.com
 
 ## Deploy
 
+Pushing to `main` deploys through Cloudflare Workers Builds (build command `pnpm build`, deploy command `npx wrangler deploy`).
+The Tsukuyomi-chan model is not in git: the Worker serves `/models/*` from the private R2 bucket `ringomate-site`. After changing it:
+
 ```sh
-pnpm exec wrangler login   # the Cloudflare account that has the sudosan.net zone
-pnpm run deploy            # astro build + wrangler deploy to https://ringomate.sudosan.net
+node scripts/model.mjs
+pnpm exec wrangler r2 object put ringomate-site/models/tsukuyomi.vrm --remote -f public/models/tsukuyomi.vrm --ct model/gltf-binary
 ```
 
-`public/models/` must be filled (`node scripts/model.mjs`) before deploying, or the page has no mascot.
+By hand: `pnpm run deploy` (astro build + wrangler deploy to https://ringomate.sudosan.net).

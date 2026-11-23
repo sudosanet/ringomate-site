@@ -7,11 +7,13 @@
   // ringomate.sudosan.net（sudosan.net のゾーンに Workers のカスタムドメインとして付く）。workers.dev には出さない
   "routes": [{ "pattern": "ringomate.sudosan.net", "custom_domain": true }],
   "workers_dev": false,
+  // つくよみちゃんのモデルは git に入れないので R2（非公開）から返す。手元の wrangler dev では public/models/ のものを返す
+  "r2_buckets": [{ "binding": "MODELS", "bucket_name": "ringomate-site" }],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/", "/ja", "/ja/", "/mcp", "/lang"]
+    "run_worker_first": ["/", "/ja", "/ja/", "/mcp", "/lang", "/models/*"]
   }
 }
